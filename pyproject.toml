@@ -1,0 +1,18 @@
+[project]
+name = "analyzebankingdocuments"
+version = "0.1.0"
+description = "Automatic ingestion of banking PDFs into SQL portfolio analytics"
+requires-python = ">=3.12"
+dependencies = [
+  "matplotlib>=3.9.2",
+  "pypdf>=5.3.1",
+  "requests>=2.32.3",
+  "selenium>=4.28.1",
+  "sqlalchemy>=2.0.38",
+  "pytest>=8.3.5",
+  "python-di-application>=0.2.0",
+  "di-unit-of-work>=0.0.3",
+]
+
+[project.scripts]
+banking-analyzer = "banking_app.applications.cli:main"

@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# SQLite databases
+*.sqlite
+*.db
+
+# Testing
+.pytest_cache/
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
+
+# uv package manager
+.uv_cache/
+
+# Generated outputs
+*.png
+
+# Downloaded documents
+incoming_pdfs/*.pdf
+incoming_pdfs/*/*.pdf
+
+# Selenium state
+.selenium_downloaded_rows.json
+incoming_pdfs/.selenium_downloaded_rows.json
+incoming_pdfs/*/.selenium_downloaded_rows.json

@@ -1,0 +1,60 @@
+{
+  "alias_neutralizations": [
+    {
+      "alias_wkn": "A3DUN5",
+      "canonical_wkn": "A2ABYA"
+    }
+  ],
+  "split_adjustments": [
+    {
+      "wkn": "918422",
+      "split_date": "2021-07-20",
+      "ratio": 4.0,
+      "label": "nvidia_4_to_1"
+    },
+    {
+      "wkn": "918422",
+      "split_date": "2024-06-10",
+      "ratio": 10.0,
+      "label": "nvidia_10_to_1"
+    },
+    {
+      "wkn": "906866",
+      "split_date": "2022-06-06",
+      "ratio": 20.0,
+      "label": "amazon_1_to_20"
+    }
+  ],
+  "share_exchange_adjustments": [
+    {
+      "source_wkn": "880135",
+      "target_wkn": "863186",
+      "exchange_date": "2022-02-14",
+      "ratio": 1.7234,
+      "label": "xilinx_to_amd"
+    }
+  ],
+  "manual_missing_buys": [
+    {
+      "wkn": "A0KRKM",
+      "buy_date": "2016-12-21",
+      "quantity": 70.0,
+      "gross_amount": 1000.0,
+      "costs": 0.0,
+      "bank": "CONSORS",
+      "label": "legacy_etf_oil_buy_estimate"
+    }
+  ],
+  "manual_buys": [
+    {
+      "wkn": "A2PKXG",
+      "buy_date": "2025-03-29",
+      "quantity": 80.0,
+      "gross_amount": 8959.2,
+      "costs": 0.0,
+      "bank": "TRADE_REPUBLIC",
+      "label": "trade_republic_buy_2025_03_29",
+      "source_file": "manual_entry:trade_republic:A2PKXG:2025-03-29"
+    }
+  ]
+}
