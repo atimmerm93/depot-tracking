@@ -4,9 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from banking_app.components.ingestion.parsing.trade_republic_pdf_parser import TradeRepublicPdfTransactionParser
-from banking_app.core.parser_errors import UnsupportedPdfDocument
-
+from depot_tracking.components.ingestion.parsing.trade_republic_pdf_parser import TradeRepublicPdfTransactionParser
+from depot_tracking.core.parser_errors import UnsupportedPdfDocument
 
 TRADE_REPUBLIC_DEPOTAUSZUG_TEXT = """
 Trade Republic Bank GmbH

@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from datetime import date, datetime
 from pathlib import Path
-import sys
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from banking_app.components.service import BankingService
-from banking_app.core.db import initialize_database
+from depot_tracking.components.service import BankingService
+from depot_tracking.core.db import initialize_database
 
 
 def _parse_month(value: str | None, arg_name: str) -> date | None:

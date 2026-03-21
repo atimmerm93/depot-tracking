@@ -6,9 +6,10 @@ import pytest
 from di_unit_of_work.session_factory.sqlite_session_factory import SqlLiteConfig, SQLiteSessionFactory
 from sqlalchemy import text
 
-from banking_app.components.reporting.history_plot import load_portfolio_monthly_history, plot_portfolio_monthly_history
-from banking_app.core.db import initialize_database
-from banking_app.core.models import Base
+from depot_tracking.components.reporting.history_plot import load_portfolio_monthly_history, \
+    plot_portfolio_monthly_history
+from depot_tracking.core.db import initialize_database
+from depot_tracking.core.models import Base
 
 
 @pytest.fixture

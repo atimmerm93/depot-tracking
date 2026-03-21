@@ -4,10 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from banking_app.components.ingestion.parsing.consors_pdf_parser import ConsorsPdfTransactionParser
-from banking_app.core.models import TransactionType
-from banking_app.core.parser_errors import UnsupportedPdfDocument
-
+from depot_tracking.components.ingestion.parsing.consors_pdf_parser import ConsorsPdfTransactionParser
+from depot_tracking.core.models import TransactionType
+from depot_tracking.core.parser_errors import UnsupportedPdfDocument
 
 CONSORS_SELL_TEXT = """
 Depotnummer DE191528929F
@@ -20,7 +19,6 @@ Solidaritätszuschlag 0,64 EUR
 Datum:29.10.2025
 """
 
-
 CONSORS_BUY_TEXT = """
 Wertpapierbezeichnung WKNISIN VANG.FTSEDEV.W.U.ETFDLA A2PLS9 IE00BK5BQV03
 ORDERABRECHNUNGKAUF
@@ -31,7 +29,6 @@ Provision 10,95 EUR
 Grundgebühr 2,00 EUR
 Datum:09.04.2025
 """
-
 
 CONSORS_BUY_OLD_LAYOUT_TEXT = """
 ORDERABRECHNUNG KAUF
@@ -44,7 +41,6 @@ Eig. Spesen EUR 1,95
 Wert 16.01.2017 EUR 1.520,14 zulasten Konto-Nr. 8258975005
 """
 
-
 CONSORS_SELL_OLD_LAYOUT_TEXT = """
 ORDERABRECHNUNG VERKAUF
 Wertpapierbezeichnung WKNISIN ETFS OIL SEC.DZ06/UN.OIL B A0KRKM DE000A0KRKM3
@@ -54,7 +50,6 @@ Provision EUR 5,00
 Grundgebühr EUR 4,95
 Wert 27.12.2016 EUR 1.621,12 zugunsten Konto-Nr. 8258975005
 """
-
 
 CONSORS_ERTRAG_TEXT = """
 Depotnummer DE191528929F
@@ -93,14 +88,12 @@ ANRECHENBARE AUSLAEND. QUELLENSTEUER EUR 1,03
 KAPST-PFLICHTIGER KAPITALERTRAG EUR 6,86
 """
 
-
 CONSORS_DEPOTAUSZUG_TEXT = """
 Jahresdepotauszug Wertpapiere per 31.12.2025
 ST10,00NVIDIACORP.RegisteredSharesDL-,001GirosammelverwahrungDeutschland918422160,36EUR1,001.603,60
 ST9,23400ADVANCEDMICRODEVICESINC.RegisteredSharesDL-,01GirosammelverwahrungDeutschland863186136,84EUR1,001.263,16
 ANZAHLPOSTEN
 """
-
 
 CONSORS_DEPOTAUSZUG_OLD_LAYOUT_TEXT = """
 WERTPAPIER-JAHRESDEPOTAUSZUG per 31.12.2019
@@ -110,7 +103,6 @@ ST10,00NVIDIACORP.210,95EUR2.109,50RegisteredSharesDL-,0019184221,00Girosammelve
 ANZAHLPOSTEN5GESAMTKURSWERTEUR7.361,43
 """
 
-
 CONSORS_DEPOTAUSZUG_COMPACT_QUARTERLY_TEXT = """
 QUARTALSDEPOTAUSZUG WERTPAPIERE per 31.12.2018
 ST30,000,00000INTELCORP.RegisteredSharesDL-,00185568140,160000EUR1,001.204,80
@@ -118,7 +110,6 @@ ST34,000,00000ADVANCEDMICRODEVICESINC.RegisteredSharesDL-,0186318615,460000EUR1,
 ST10,00NVIDIACORP.RegisteredSharesDL-,001918422132,30USD1,1451.155,46
 ANZAHLPOSTEN3GESAMTKURSWERTEUR2.885,90
 """
-
 
 CONSORS_DEPOTAUSZUG_EMPTY_TEXT = """
 Seite Jahresdepotauszug per 31.12.2016 Depot 0448609135 1

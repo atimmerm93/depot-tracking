@@ -3,11 +3,11 @@ from __future__ import annotations
 import time
 from pathlib import Path
 
-from banking_app.applications.download.download_service.consors.consors_selenium_downloader import \
+from depot_tracking.applications.download.download_service.consors.consors_selenium_downloader import \
     ConsorsSeleniumInboxDownloader, \
     RowCandidate
-from banking_app.applications.download.download_service.download_support import SeleniumDownloadSupport
-from banking_app.applications.download.download_service.selenium_shared import SeleniumDownloadConfig
+from depot_tracking.applications.download.download_service.download_support import SeleniumDownloadSupport
+from depot_tracking.applications.download.download_service.selenium_shared import SeleniumDownloadConfig
 
 
 def test_extract_doc_type_recognizes_requested_consors_types(tmp_path: Path) -> None:

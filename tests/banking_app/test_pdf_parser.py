@@ -4,9 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from banking_app.core.models import TransactionType
-from banking_app.components.ingestion.parsing.pdf_parser import INGPdfParser, UnsupportedPdfDocument
-
+from depot_tracking.components.ingestion.parsing.pdf_parser import INGPdfParser, UnsupportedPdfDocument
+from depot_tracking.core.models import TransactionType
 
 BUY_TEXT = """
 Wertpapierabrechnung Kauf aus Sparplan
@@ -22,7 +21,6 @@ Endbetrag zu Ihren Lasten EUR 1.000,00
 Valuta 04.02.2026
 """
 
-
 ERTRAGS_TEXT = """
 Vorabpauschale
 ISIN (WKN) IE00BK5BQT80 (A2PKXG)
@@ -33,7 +31,6 @@ Ex-Tag 02.01.2026
 Gesamtbetrag zu Ihren Lasten EUR - 216,21
 Valuta 02.01.2026
 """
-
 
 UNKNOWN_TEXT = """
 Depotinformation
@@ -110,7 +107,8 @@ def test_parse_depotauszug_holdings(monkeypatch: pytest.MonkeyPatch) -> None:
     parser = INGPdfParser()
     monkeypatch.setattr(parser, "_extract_text", lambda _path: DEPOTAUSZUG_TEXT)
 
-    snapshot_date, holdings = parser.parse_depotauszug_holdings(Path("Direkt_Depot_8013529518_Depotauszug_20241015.pdf"))
+    snapshot_date, holdings = parser.parse_depotauszug_holdings(
+        Path("Direkt_Depot_8013529518_Depotauszug_20241015.pdf"))
 
     assert snapshot_date.isoformat() == "2024-09-30"
     assert len(holdings) == 2

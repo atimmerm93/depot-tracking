@@ -10,18 +10,18 @@ import pytest
 from python_di_application.dependency import Dependency, DependencyInstance
 from python_di_application.di_container import DIContainer
 
-from banking_app.components.ingestion import DocumentRouter
-from banking_app.components.ingestion import IngestionService
-from banking_app.components.ingestion import IngestionStore
-from banking_app.components.ingestion.parsing.consors_pdf_parser import ConsorsPdfTransactionParser
-from banking_app.components.ingestion.parsing.general_pdf_parser import GeneralPdfParser
-from banking_app.components.ingestion.parsing.ing_pdf_parser import INGPdfParser
-from banking_app.components.ingestion.parsing.parser_factory import ParserFactory
-from banking_app.components.ingestion.parsing.trade_republic_pdf_parser import TradeRepublicPdfTransactionParser
-from banking_app.components.shared import BankClassifier, SourceDocumentNormalizer
-from banking_app.config import ParserConfig
-from banking_app.core.models import ParsedHolding, ParsedTransaction, TransactionType
-from banking_app.core.parser_errors import PdfParseError, UnsupportedPdfDocument
+from depot_tracking.components.ingestion import DocumentRouter
+from depot_tracking.components.ingestion import IngestionService
+from depot_tracking.components.ingestion import IngestionStore
+from depot_tracking.components.ingestion.parsing.consors_pdf_parser import ConsorsPdfTransactionParser
+from depot_tracking.components.ingestion.parsing.general_pdf_parser import GeneralPdfParser
+from depot_tracking.components.ingestion.parsing.ing_pdf_parser import INGPdfParser
+from depot_tracking.components.ingestion.parsing.parser_factory import ParserFactory
+from depot_tracking.components.ingestion.parsing.trade_republic_pdf_parser import TradeRepublicPdfTransactionParser
+from depot_tracking.components.shared import BankClassifier, SourceDocumentNormalizer
+from depot_tracking.config import ParserConfig
+from depot_tracking.core.models import ParsedHolding, ParsedTransaction, TransactionType
+from depot_tracking.core.parser_errors import PdfParseError, UnsupportedPdfDocument
 
 
 @dataclass

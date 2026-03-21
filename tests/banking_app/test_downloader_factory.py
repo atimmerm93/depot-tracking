@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-import banking_app.applications.download.download_service.downloader_factory as downloader_factory
-from banking_app.applications.download.download_service.download_support import SeleniumDownloadSupport
-from banking_app.applications.download.download_service.selenium_shared import SeleniumDownloadConfig
+import depot_tracking.applications.download.download_service.downloader_factory as downloader_factory
+from depot_tracking.applications.download.download_service.download_support import SeleniumDownloadSupport
+from depot_tracking.applications.download.download_service.selenium_shared import SeleniumDownloadConfig
 
 
 @pytest.fixture

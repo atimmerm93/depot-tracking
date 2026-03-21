@@ -3,8 +3,8 @@ from pathlib import Path
 from di_unit_of_work.session_factory.sqlite_session_factory import SqlLiteConfig, SQLiteSessionFactory
 from sqlalchemy import text
 
-from banking_app.core.models import Base
-from banking_app.core.db import initialize_database
+from depot_tracking.core.db import initialize_database
+from depot_tracking.core.models import Base
 
 
 def test_sqlite_session_factory_creates_working_session(tmp_path: Path) -> None:

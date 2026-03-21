@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import sqlite3
 from pathlib import Path
 
 from di_unit_of_work.session_factory.sqlite_session_factory import SqlLiteConfig, SQLiteSessionFactory
 from sqlalchemy import text
-import sqlite3
 
-from banking_app.core.db import initialize_database
-from banking_app.core.models import Base
+from depot_tracking.core.db import initialize_database
+from depot_tracking.core.models import Base
 
 
 def _insert_source_document(conn: sqlite3.Connection, *, source_file: str, source_hash: str) -> int:
@@ -21,25 +21,25 @@ def _insert_source_document(conn: sqlite3.Connection, *, source_file: str, sourc
 
 
 def _insert_transaction(
-    conn: sqlite3.Connection,
-    *,
-    product_id: int,
-    tx_type: str,
-    transaction_date: str,
-    quantity: float,
-    gross_amount: float,
-    costs: float,
-    currency: str,
-    source_file: str,
-    source_hash: str,
-    bank: str = "UNKNOWN",
+        conn: sqlite3.Connection,
+        *,
+        product_id: int,
+        tx_type: str,
+        transaction_date: str,
+        quantity: float,
+        gross_amount: float,
+        costs: float,
+        currency: str,
+        source_file: str,
+        source_hash: str,
+        bank: str = "UNKNOWN",
 ) -> None:
     source_document_id = _insert_source_document(conn, source_file=source_file, source_hash=source_hash)
     conn.execute(
         """
-        INSERT INTO transactions (
-            product_id, source_document_id, type, transaction_date, quantity, gross_amount, costs, currency, bank
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO transactions (product_id, source_document_id, type, transaction_date, quantity, gross_amount, costs,
+                                  currency, bank)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (product_id, source_document_id, tx_type, transaction_date, quantity, gross_amount, costs, currency, bank),
     )
@@ -56,7 +56,8 @@ def test_initialize_database_creates_profit_views(tmp_path: Path) -> None:
 
     assert result is not None
     with session_factory() as session:
-        sold_row = session.execute(text("SELECT name FROM sqlite_master WHERE type='view' AND name='v_sold_transactions'"))
+        sold_row = session.execute(
+            text("SELECT name FROM sqlite_master WHERE type='view' AND name='v_sold_transactions'"))
         sold_result = sold_row.first()
         ertrag_row = session.execute(
             text("SELECT name FROM sqlite_master WHERE type='view' AND name='v_ertragsabrechnungen_by_year'")
@@ -91,24 +92,26 @@ def test_initialize_database_migrates_old_transaction_type_check(tmp_path: Path)
     with sqlite3.connect(db_path) as conn:
         conn.executescript(
             """
-            CREATE TABLE products (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+            CREATE TABLE products
+            (
+                id  INTEGER PRIMARY KEY AUTOINCREMENT,
                 wkn TEXT NOT NULL UNIQUE
             );
 
-            CREATE TABLE transactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                product_id INTEGER NOT NULL,
-                type TEXT NOT NULL CHECK (type IN ('BUY', 'SELL')),
-                transaction_date TEXT NOT NULL,
-                quantity REAL NOT NULL CHECK (quantity > 0),
-                gross_amount REAL NOT NULL CHECK (gross_amount >= 0),
-                costs REAL NOT NULL DEFAULT 0 CHECK (costs >= 0),
-                currency TEXT NOT NULL DEFAULT 'EUR',
-                source_file TEXT NOT NULL,
-                source_hash TEXT NOT NULL UNIQUE,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+            CREATE TABLE transactions
+            (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id       INTEGER NOT NULL,
+                type             TEXT    NOT NULL CHECK (type IN ('BUY', 'SELL')),
+                transaction_date TEXT    NOT NULL,
+                quantity         REAL    NOT NULL CHECK (quantity > 0),
+                gross_amount     REAL    NOT NULL CHECK (gross_amount >= 0),
+                costs            REAL    NOT NULL DEFAULT 0 CHECK (costs >= 0),
+                currency         TEXT    NOT NULL DEFAULT 'EUR',
+                source_file      TEXT    NOT NULL,
+                source_hash      TEXT    NOT NULL UNIQUE,
+                created_at       TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE RESTRICT
             );
             """
         )
@@ -150,7 +153,7 @@ def test_initialize_database_migrates_old_transaction_type_check(tmp_path: Path)
             """
             SELECT t.type, t.quantity
             FROM transactions t
-            JOIN source_documents sd ON sd.id = t.source_document_id
+                     JOIN source_documents sd ON sd.id = t.source_document_id
             WHERE sd.file_hash = ?
             """,
             ("hash-split",),
@@ -159,7 +162,7 @@ def test_initialize_database_migrates_old_transaction_type_check(tmp_path: Path)
             """
             SELECT t.bank
             FROM transactions t
-            JOIN source_documents sd ON sd.id = t.source_document_id
+                     JOIN source_documents sd ON sd.id = t.source_document_id
             WHERE sd.file_hash = ?
             """,
             ("hash-x",),
@@ -175,35 +178,40 @@ def test_initialize_database_adds_and_backfills_transactions_bank_column(tmp_pat
     with sqlite3.connect(db_path) as conn:
         conn.executescript(
             """
-            CREATE TABLE products (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+            CREATE TABLE products
+            (
+                id  INTEGER PRIMARY KEY AUTOINCREMENT,
                 wkn TEXT NOT NULL UNIQUE
             );
 
-            CREATE TABLE transactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                product_id INTEGER NOT NULL,
-                type TEXT NOT NULL CHECK (type IN ('BUY', 'SELL', 'ERTRAGSABRECHNUNG')),
-                transaction_date TEXT NOT NULL,
-                quantity REAL NOT NULL DEFAULT 0 CHECK (quantity >= 0),
-                gross_amount REAL NOT NULL,
-                costs REAL NOT NULL DEFAULT 0 CHECK (costs >= 0),
-                currency TEXT NOT NULL DEFAULT 'EUR',
-                source_file TEXT NOT NULL,
-                source_hash TEXT NOT NULL UNIQUE,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+            CREATE TABLE transactions
+            (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id       INTEGER NOT NULL,
+                type             TEXT    NOT NULL CHECK (type IN ('BUY', 'SELL', 'ERTRAGSABRECHNUNG')),
+                transaction_date TEXT    NOT NULL,
+                quantity         REAL    NOT NULL DEFAULT 0 CHECK (quantity >= 0),
+                gross_amount     REAL    NOT NULL,
+                costs            REAL    NOT NULL DEFAULT 0 CHECK (costs >= 0),
+                currency         TEXT    NOT NULL DEFAULT 'EUR',
+                source_file      TEXT    NOT NULL,
+                source_hash      TEXT    NOT NULL UNIQUE,
+                created_at       TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE RESTRICT
             );
 
-            INSERT INTO products (id, wkn) VALUES (1, 'A2PKXG');
-            INSERT INTO products (id, wkn) VALUES (2, 'A1J4U4');
+            INSERT INTO products (id, wkn)
+            VALUES (1, 'A2PKXG');
+            INSERT INTO products (id, wkn)
+            VALUES (2, 'A1J4U4');
 
-            INSERT INTO transactions (
-                product_id, type, transaction_date, quantity, gross_amount, costs, currency, source_file, source_hash
-            ) VALUES
-                (1, 'BUY', '2025-01-01', 1.0, 100.0, 0.0, 'EUR', 'incoming_pdfs/cortal_consors/KAUF_foo.pdf', 'h1'),
-                (2, 'BUY', '2025-01-01', 1.0, 100.0, 0.0, 'EUR', 'incoming_pdfs/Direkt_Depot_Abrechnung_Kauf.pdf', 'h2'),
-                (2, 'BUY', '2025-01-01', 1.0, 100.0, 0.0, 'EUR', 'incoming_pdfs/trade_republic/Wertpapiere.pdf', 'h3');
+            INSERT INTO transactions (product_id, type, transaction_date, quantity, gross_amount, costs, currency,
+                                      source_file, source_hash)
+            VALUES (1, 'BUY', '2025-01-01', 1.0, 100.0, 0.0, 'EUR', 'incoming_pdfs/cortal_consors/KAUF_foo.pdf', 'h1'),
+                   (2, 'BUY', '2025-01-01', 1.0, 100.0, 0.0, 'EUR', 'incoming_pdfs/Direkt_Depot_Abrechnung_Kauf.pdf',
+                    'h2'),
+                   (2, 'BUY', '2025-01-01', 1.0, 100.0, 0.0, 'EUR', 'incoming_pdfs/trade_republic/Wertpapiere.pdf',
+                    'h3');
             """
         )
         conn.commit()
@@ -218,7 +226,7 @@ def test_initialize_database_adds_and_backfills_transactions_bank_column(tmp_pat
             """
             SELECT sd.file_hash, t.bank
             FROM transactions t
-            JOIN source_documents sd ON sd.id = t.source_document_id
+                     JOIN source_documents sd ON sd.id = t.source_document_id
             ORDER BY sd.file_hash
             """
         ).fetchall()
@@ -235,18 +243,20 @@ def test_initialize_database_adds_snapshot_price_column_to_legacy_holding_snapsh
     with sqlite3.connect(db_path) as conn:
         conn.executescript(
             """
-            CREATE TABLE products (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+            CREATE TABLE products
+            (
+                id  INTEGER PRIMARY KEY AUTOINCREMENT,
                 wkn TEXT NOT NULL UNIQUE
             );
 
-            CREATE TABLE holding_snapshots (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                product_id INTEGER NOT NULL,
-                snapshot_date TEXT NOT NULL,
-                quantity REAL NOT NULL,
-                source_file TEXT NOT NULL,
-                source_hash TEXT NOT NULL
+            CREATE TABLE holding_snapshots
+            (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id    INTEGER NOT NULL,
+                snapshot_date TEXT    NOT NULL,
+                quantity      REAL    NOT NULL,
+                source_file   TEXT    NOT NULL,
+                source_hash   TEXT    NOT NULL
             );
             """
         )
@@ -354,13 +364,12 @@ def test_sold_transactions_view_calculates_buy_sell_profit(tmp_path: Path) -> No
     with sqlite3.connect(db_path) as conn:
         row = conn.execute(
             """
-            SELECT
-                quantity_sold,
-                avg_buy_price_eur,
-                avg_sell_price_eur,
-                buy_total_eur,
-                sell_total_eur,
-                profit_eur
+            SELECT quantity_sold,
+                   avg_buy_price_eur,
+                   avg_sell_price_eur,
+                   buy_total_eur,
+                   sell_total_eur,
+                   profit_eur
             FROM v_sold_transactions
             WHERE wkn = 'A2PKXG'
             """
@@ -460,8 +469,7 @@ def test_ertragsabrechnungen_by_year_groups_per_product_and_year(tmp_path: Path)
     with sqlite3.connect(db_path) as conn:
         result = conn.execute(
             """
-            SELECT
-                wkn, year, entries_count, gross_amount_sum_eur, costs_sum_eur, net_amount_sum_eur
+            SELECT wkn, year, entries_count, gross_amount_sum_eur, costs_sum_eur, net_amount_sum_eur
             FROM v_ertragsabrechnungen_by_year
             ORDER BY wkn, year
             """
@@ -561,9 +569,9 @@ def test_return_on_equity_by_year_uses_average_yearly_invested_amount(tmp_path: 
         ]
         conn.executemany(
             """
-            INSERT INTO portfolio_monthly_history (
-                month_date, month_end_date, invested_amount_eur, portfolio_value_eur, portfolio_profit_eur, source
-            ) VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO portfolio_monthly_history (month_date, month_end_date, invested_amount_eur, portfolio_value_eur,
+                                                   portfolio_profit_eur, source)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
             history_rows,
         )
@@ -632,9 +640,13 @@ def test_current_positions_unrealized_profit_uses_open_position_only(tmp_path: P
     with sqlite3.connect(db_path) as conn:
         rows = conn.execute(
             """
-            SELECT
-                wkn, quantity_open, avg_buy_price_eur, invested_open_eur,
-                current_price_eur, current_value_eur, unrealized_profit_eur
+            SELECT wkn,
+                   quantity_open,
+                   avg_buy_price_eur,
+                   invested_open_eur,
+                   current_price_eur,
+                   current_value_eur,
+                   unrealized_profit_eur
             FROM v_current_positions_unrealized_profit
             ORDER BY wkn
             """

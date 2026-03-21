@@ -13,39 +13,39 @@ from python_di_application.dependency import Dependency, DependencyInstance
 from python_di_application.di_container import DIContainer
 from sqlalchemy import case, func, select
 
-from banking_app.components.ingestion import DocumentDeduplicationService
-from banking_app.components.ingestion import DocumentRouter
-from banking_app.components.ingestion import IngestionService
-from banking_app.components.ingestion import IngestionStore
-from banking_app.components.ingestion.parsing.parser_factory import ParserFactory
-from banking_app.components.ingestion.parsing.pdf_parser import UnsupportedPdfDocument
-from banking_app.components.repair import RepairService
-from banking_app.components.analytics.service import AnalyticsService
-from banking_app.components.data_operations.asset_value_data_operations import AssetValueDataOperations
-from banking_app.components.data_operations.asset_value_repository import AssetValueRepository
-from banking_app.components.data_operations.holding_snapshot_data_operations import HoldingSnapshotDataOperations
-from banking_app.components.data_operations.holding_snapshot_repository import HoldingSnapshotRepository
-from banking_app.components.data_operations.portfolio_monthly_history_data_operations import \
+from depot_tracking.components.analytics.service import AnalyticsService
+from depot_tracking.components.data_operations.asset_value_data_operations import AssetValueDataOperations
+from depot_tracking.components.data_operations.asset_value_repository import AssetValueRepository
+from depot_tracking.components.data_operations.holding_snapshot_data_operations import HoldingSnapshotDataOperations
+from depot_tracking.components.data_operations.holding_snapshot_repository import HoldingSnapshotRepository
+from depot_tracking.components.data_operations.portfolio_monthly_history_data_operations import \
     PortfolioMonthlyHistoryDataOperations
-from banking_app.components.data_operations.processed_file_data_operations import ProcessedFileDataOperations
-from banking_app.components.data_operations.processed_file_repository import ProcessedFileRepository
-from banking_app.components.data_operations.product_data_operations import ProductDataOperations
-from banking_app.components.data_operations.product_repository import ProductRepository
-from banking_app.components.data_operations.source_document_data_operations import SourceDocumentDataOperations
-from banking_app.components.data_operations.transaction_data_operations import TransactionDataOperations
-from banking_app.components.data_operations.transaction_repository import TransactionRepository
-from banking_app.components.market.market_data import HistoricalPriceResult, MarketDataError, QuoteResult
-from banking_app.components.market.market_data import YahooMarketDataClient
-from banking_app.components.shared import (
+from depot_tracking.components.data_operations.processed_file_data_operations import ProcessedFileDataOperations
+from depot_tracking.components.data_operations.processed_file_repository import ProcessedFileRepository
+from depot_tracking.components.data_operations.product_data_operations import ProductDataOperations
+from depot_tracking.components.data_operations.product_repository import ProductRepository
+from depot_tracking.components.data_operations.source_document_data_operations import SourceDocumentDataOperations
+from depot_tracking.components.data_operations.transaction_data_operations import TransactionDataOperations
+from depot_tracking.components.data_operations.transaction_repository import TransactionRepository
+from depot_tracking.components.ingestion import DocumentDeduplicationService
+from depot_tracking.components.ingestion import DocumentRouter
+from depot_tracking.components.ingestion import IngestionService
+from depot_tracking.components.ingestion import IngestionStore
+from depot_tracking.components.ingestion.parsing.parser_factory import ParserFactory
+from depot_tracking.components.ingestion.parsing.pdf_parser import UnsupportedPdfDocument
+from depot_tracking.components.market.market_data import HistoricalPriceResult, MarketDataError, QuoteResult
+from depot_tracking.components.market.market_data import YahooMarketDataClient
+from depot_tracking.components.repair import RepairService
+from depot_tracking.components.shared import (
     BankClassifier,
     CalendarMonthService,
     IdentifierCanonicalizer,
     RepairRulesLoader,
     SourceDocumentNormalizer,
 )
-from banking_app.config import BankingAppConfig, ParserConfig
-from banking_app.core.db import initialize_database
-from banking_app.core.models import (
+from depot_tracking.config import BankingAppConfig, ParserConfig
+from depot_tracking.core.db import initialize_database
+from depot_tracking.core.models import (
     AssetValue,
     Base,
     HoldingSnapshot,
@@ -208,11 +208,11 @@ def _build_services(
         ]
     )
     for dependency_type in (
-        SQLiteSessionFactory,
-        IngestionService,
-        DocumentDeduplicationService,
-        AnalyticsService,
-        RepairService,
+            SQLiteSessionFactory,
+            IngestionService,
+            DocumentDeduplicationService,
+            AnalyticsService,
+            RepairService,
     ):
         container.resolve_dependency(dependency_type)
     container.apply_post_init_wrappers()

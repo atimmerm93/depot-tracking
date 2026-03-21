@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import banking_app.applications.download.gateway as download_gateway
-from banking_app.applications.cli import main
+import depot_tracking.applications.download.gateway as download_gateway
+from depot_tracking.applications.cli import main
 
 
 def test_cli_main_init_db_uses_di_overridden_db_path(tmp_path: Path) -> None:
