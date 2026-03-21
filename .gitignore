@@ -36,3 +36,4 @@ incoming_pdfs/*/*.pdf
 .selenium_downloaded_rows.json
 incoming_pdfs/.selenium_downloaded_rows.json
 incoming_pdfs/*/.selenium_downloaded_rows.json
+incoming_pdfs/*/*.selenium_downloaded_rows_consors.json
