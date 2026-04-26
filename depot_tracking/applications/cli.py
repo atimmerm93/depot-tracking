@@ -24,6 +24,7 @@ REPAIR_COMMANDS = {
 }
 PORTFOLIO_COMMANDS = {
     "update-values",
+    "backfill-monthly-values",
     "build-monthly-history",
     "plot-history",
     "report",
@@ -65,6 +66,18 @@ def build_parser() -> argparse.ArgumentParser:
         "repair-db",
         help="Apply known data repairs (alias duplicates and stock split adjustments)",
     )
+    backfill = subparsers.add_parser(
+        "backfill-monthly-values",
+        help="Fetch historical month-end prices from Yahoo Finance and rebuild monthly portfolio history",
+    )
+    backfill.add_argument("--start-month", default=None, help="Optional start month (YYYY-MM)")
+    backfill.add_argument("--end-month", default=None, help="Optional end month (YYYY-MM)")
+    backfill.add_argument(
+        "--skip-history-rebuild",
+        action="store_true",
+        help="Only backfill Yahoo prices, do not rebuild portfolio_monthly_history afterwards",
+    )
+
     monthly_history = subparsers.add_parser(
         "build-monthly-history",
         help="Compute and store portfolio history snapshots per month",

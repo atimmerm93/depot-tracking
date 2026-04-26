@@ -78,6 +78,23 @@ class PortfolioApplication(Application):
             self._output.print_value_stats(stats)
             return 0 if args.ignore_network_errors or stats["errors"] == 0 else 1
 
+        if args.command == "backfill-monthly-values":
+            start_month = self._month_parser.parse(args.start_month, "--start-month")
+            end_month = self._month_parser.parse(args.end_month, "--end-month")
+            market_stats = self._analytics_service.backfill_monthly_market_values_from_yahoo(
+                start_month=start_month,
+                end_month=end_month,
+            )
+            history_stats = None
+            if not args.skip_history_rebuild:
+                history_stats = self._analytics_service.build_portfolio_monthly_history(
+                    start_month=start_month,
+                    end_month=end_month,
+                )
+            self._output.print_backfill_stats(market_stats, history_stats)
+            total_errors = market_stats.get("errors", 0) + (history_stats or {}).get("errors", 0)
+            return 0 if total_errors == 0 else 1
+
         if args.command == "build-monthly-history":
             stats = self._analytics_service.build_portfolio_monthly_history(
                 start_month=self._month_parser.parse(args.start_month, "--start-month"),

@@ -22,6 +22,25 @@ class PortfolioCliOutput:
         )
 
     @staticmethod
+    def print_backfill_stats(market_stats: dict[str, int], history_stats: dict[str, int] | None) -> None:
+        print(
+            "Yahoo backfill summary: "
+            f"months={market_stats.get('months', 0)}, "
+            f"positions={market_stats.get('positions', 0)}, "
+            f"created={market_stats.get('created', 0)}, "
+            f"updated={market_stats.get('updated', 0)}, "
+            f"errors={market_stats.get('errors', 0)}"
+        )
+        if history_stats is not None:
+            print(
+                "Monthly history rebuild: "
+                f"months={history_stats.get('months', 0)}, "
+                f"created={history_stats.get('created', 0)}, "
+                f"updated={history_stats.get('updated', 0)}, "
+                f"errors={history_stats.get('errors', 0)}"
+            )
+
+    @staticmethod
     def print_report(*, total: dict[str, float], rows: list[dict[str, Any]], limit: int) -> None:
         print(
             "Current profit: "

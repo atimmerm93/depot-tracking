@@ -2,25 +2,13 @@ from __future__ import annotations
 
 import argparse
 import sys
-from datetime import date, datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from depot_tracking.components.service import BankingService
-from depot_tracking.core.db import initialize_database
-
-
-def _parse_month(value: str | None, arg_name: str) -> date | None:
-    if value is None:
-        return None
-    try:
-        parsed = datetime.strptime(value, "%Y-%m").date()
-    except ValueError as exc:
-        raise SystemExit(f"Invalid {arg_name} value '{value}'. Expected format YYYY-MM.") from exc
-    return parsed.replace(day=1)
+from depot_tracking.applications.cli import main as cli_main
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -40,44 +28,17 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
+    args = build_parser().parse_args(argv)
 
-    db_path = Path(args.db_path)
-    initialize_database(db_path)
-    service = BankingService(db_path)
-
-    start_month = _parse_month(args.start_month, "--start-month")
-    end_month = _parse_month(args.end_month, "--end-month")
-
-    market_stats = service.backfill_monthly_market_values_from_yahoo(
-        start_month=start_month,
-        end_month=end_month,
-    )
-    print(
-        "Monthly Yahoo backfill summary: "
-        f"months={market_stats.get('months', 0)}, "
-        f"positions={market_stats.get('positions', 0)}, "
-        f"created={market_stats.get('created', 0)}, "
-        f"updated={market_stats.get('updated', 0)}, "
-        f"errors={market_stats.get('errors', 0)}"
-    )
-
+    cli_argv = ["--db-path", args.db_path, "backfill-monthly-values"]
+    if args.start_month:
+        cli_argv += ["--start-month", args.start_month]
+    if args.end_month:
+        cli_argv += ["--end-month", args.end_month]
     if args.skip_history_rebuild:
-        return 0 if market_stats.get("errors", 0) == 0 else 1
+        cli_argv.append("--skip-history-rebuild")
 
-    history_stats = service.build_portfolio_monthly_history(
-        start_month=start_month,
-        end_month=end_month,
-    )
-    print(
-        "Monthly history rebuild summary: "
-        f"months={history_stats.get('months', 0)}, "
-        f"created={history_stats.get('created', 0)}, "
-        f"updated={history_stats.get('updated', 0)}, "
-        f"errors={history_stats.get('errors', 0)}"
-    )
-    return 0 if (market_stats.get("errors", 0) + history_stats.get("errors", 0)) == 0 else 1
+    return cli_main(cli_argv)
 
 
 if __name__ == "__main__":

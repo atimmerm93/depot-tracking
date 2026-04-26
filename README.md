@@ -114,7 +114,7 @@ Apply known portfolio data repairs (currently includes Atlassian alias duplicate
 adjustment):
 
 ```bash
-uv run python main.py --db-path banking.sqlite repair_service-db
+uv run python main.py --db-path banking.sqlite repair-db
 ```
 
 Print report:
