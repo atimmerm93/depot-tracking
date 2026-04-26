@@ -47,6 +47,15 @@
   ],
   "manual_buys": [
     {
+      "wkn": "909800",
+      "buy_date": "2019-01-02",
+      "quantity": 22.0,
+      "gross_amount": 836.0,
+      "costs": 0.0,
+      "bank": "ING",
+      "label": "ing_tsmc_original_22_shares_buy_estimate"
+    },
+    {
       "wkn": "A2PKXG",
       "buy_date": "2025-03-29",
       "quantity": 80.0,

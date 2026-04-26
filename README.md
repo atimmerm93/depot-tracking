@@ -73,7 +73,7 @@ uv run python main.py --db-path banking.sqlite build-monthly-history
 Optional range:
 
 ```bash
-uv run python main.py --db-path banking.sqlite build-monthly-history --start-month 2021-01 --end-month 2026-02
+uv run python main.py --db-path banking.sqlite build-monthly-history --start-month 2020-01 --end-month 2026-02
 ```
 
 Draw a graph from `v_portfolio_monthly_history` (x-axis time, y-axis EUR, lines for `portfolio_value_eur`,
